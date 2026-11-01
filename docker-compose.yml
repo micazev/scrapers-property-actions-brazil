@@ -1,0 +1,22 @@
+# Local Postgres for DATABASE_URL mode. The schema is applied on first start.
+#   docker compose up -d
+#   export DATABASE_URL=postgresql://scraper:scraper@localhost:5432/leiloes
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: scraper
+      POSTGRES_PASSWORD: scraper
+      POSTGRES_DB: leiloes
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "scraper", "-d", "leiloes"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pgdata:

@@ -1,0 +1,73 @@
+# Run the scrapers on GitHub Actions.
+#
+# Repository secrets (Settings → Secrets and variables → Actions), both optional:
+#   BROWSERLESS_TOKEN  hosted Chromium (https://www.browserless.io). Without it
+#                      the job installs and uses a local headless Chromium.
+#   DATABASE_URL       Postgres with sql/schema.sql applied. Without it each
+#                      scraper writes output/<scraper>.json, uploaded as an artifact.
+name: Scrape
+
+on:
+  workflow_dispatch:
+    inputs:
+      scrapers:
+        description: 'Scraper names separated by spaces, or "all"'
+        default: all
+      max:
+        description: Maximum properties per scraper
+        default: "200"
+  # Uncomment to run on a schedule (UTC):
+  # schedule:
+  #   - cron: "0 9 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      BROWSERLESS_TOKEN: ${{ secrets.BROWSERLESS_TOKEN }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+          cache: pip
+          cache-dependency-path: requirements.lock
+
+      - name: Install dependencies
+        run: pip install -r requirements.lock
+
+      - name: Install local Chromium (only without BROWSERLESS_TOKEN)
+        if: env.BROWSERLESS_TOKEN == ''
+        run: python -m playwright install --with-deps chromium
+
+      - name: Run scrapers
+        env:
+          SCRAPERS: ${{ inputs.scrapers || 'all' }}
+          MAX: ${{ inputs.max || '200' }}
+        run: |
+          if [ "$SCRAPERS" = "all" ]; then
+            python -m leiloes_scraper.scrapers.runner --all --max "$MAX" --concurrent 2 --stagger 5
+          else
+            # word splitting on purpose: one argument per scraper name
+            python -m leiloes_scraper.scrapers.runner --scraper $SCRAPERS --max "$MAX"
+          fi
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scrape-${{ github.run_id }}
+          path: |
+            output/
+            scraper_alerts.json
+            scraper_health.json
+            screenshots/
+          if-no-files-found: ignore
+          retention-days: 14

@@ -1,0 +1,44 @@
+# Tests on every push and pull request. No network access to auction sites:
+# the parser tests run each scraper against the HTML in tests/fixtures/.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+          cache: pip
+          cache-dependency-path: requirements-dev.lock
+
+      - run: pip install -r requirements-dev.lock
+
+      - run: python -m playwright install --with-deps chromium
+
+      # The fixture tests skip when Chromium can't start; fail loudly instead,
+      # since a green run with them skipped proves nothing about the parsers.
+      - name: Check Chromium starts
+        run: python -c "from playwright.sync_api import sync_playwright as p; b = p().start().chromium.launch(); b.close()"
+
+      - run: python -m pytest -rs

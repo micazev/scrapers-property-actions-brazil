@@ -1,0 +1,43 @@
+<!--
+  Replica of the portalzuk.com.br listing-card DOM as encoded in
+  scrapers/custom/portalzuk.py (card-property / card-property-address /
+  card-property-price with 1º/2º leilão labels).
+
+  When retuning against the live site, replace this file with captured HTML
+  (save the listing page DOM from devtools) — the test harness stays the same.
+-->
+<div id="listing">
+  <div class="card-property">
+    <a href="/imovel/sp/sao-paulo/apartamento-vila-mariana-55m2" title="Apartamento 55m² na Vila Mariana"></a>
+    <address class="card-property-address">
+      <span style="font-weight: 600">São Paulo / SP - Vila Mariana</span>
+      <span style="flex-basis: 100%">Rua Domingos de Morais, 1234 - apto 52</span>
+    </address>
+    <ul>
+      <li class="card-property-price">
+        <span class="card-property-price-label">Valor 1º leilão</span>
+        <span class="card-property-price-value">R$ 350.000,00</span>
+      </li>
+      <li class="card-property-price">
+        <span class="card-property-price-label">Valor 2º leilão</span>
+        <span class="card-property-price-value">R$ 210.000,00</span>
+      </li>
+    </ul>
+    <img src="https://cdn.example.test/imoveis/vila-mariana.jpg" />
+  </div>
+
+  <div class="card-property">
+    <a href="/imovel/pr/curitiba/casa-boqueirao-120m2" title="Casa 120m² no Boqueirão"></a>
+    <address class="card-property-address">
+      <span style="font-weight: 600">Curitiba / PR - Boqueirão</span>
+      <span style="flex-basis: 100%">Rua Carlos de Laet, 98</span>
+    </address>
+    <ul>
+      <li class="card-property-price">
+        <span class="card-property-price-label">Valor 1º leilão</span>
+        <span class="card-property-price-value">R$ 480.000,00</span>
+      </li>
+    </ul>
+    <img src="https://cdn.example.test/imoveis/boqueirao.jpg" />
+  </div>
+</div>

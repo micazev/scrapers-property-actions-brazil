@@ -1,0 +1,31 @@
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "F",   # pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "SIM", # flake8-simplify
+]
+ignore = [
+  "B008",   # function call in default arg — common Pydantic/FastAPI pattern
+  "SIM108", # ternary-instead-of-if — sometimes hurts readability
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # re-exports
+# Scraper modules embed long CSS-selector / URL string literals that cannot be
+# wrapped without breaking the selector; allow E501 there, enforce it elsewhere.
+"leiloes_scraper/scrapers/custom/*.py" = ["E501"]
+"leiloes_scraper/scrapers/leiloeiros/*.py" = ["E501"]
+"leiloes_scraper/scrapers/runner.py" = ["E501"]
+
+[tool.ruff.format]

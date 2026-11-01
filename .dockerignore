@@ -1,0 +1,13 @@
+.git
+.github
+.venv
+**/__pycache__
+**/*.pyc
+.pytest_cache
+tests
+output
+screenshots
+scraper_alerts.json
+scraper_health.json
+.env
+.env.*

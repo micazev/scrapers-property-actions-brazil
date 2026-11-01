@@ -1,0 +1,42 @@
+<!--
+  Replica of the francoleiloes.com.br listing-card DOM as encoded in
+  scrapers/leiloeiros/francoleiloes.py (.dg-leiloes-* classes, praça-1/praça-2
+  blocks, background-image thumbnails).
+
+  Card 1: praça 1 still active -> price comes from .Praca1 lance inicial.
+  Card 2: .Praca1 carries dg-opacidade (1st auction ended) -> price comes
+  from .Praca2 lance inicial.
+
+  When retuning against the live site, replace this file with captured HTML.
+-->
+<div class="dg-leiloes">
+  <div class="dg-leiloes-item-col">
+    <a class="dg-leiloes-img" href="/leilao/1021/lote/7">
+      <span style="background-image: url('/imagens-center/350x282/casa-aguas-lindas.jpg')"></span>
+    </a>
+    <div class="dg-leiloes-nome-leilao">Leilão de Imóveis Caixa</div>
+    <div class="dg-leiloes-nome-subleilao">Águas Lindas de Goiás/GO - Parque da Barragem - Casa 150m²</div>
+    <div class="dg-leiloes-valor-avaliacao">Avaliação: <strong>R$ 200.000,00</strong></div>
+    <div class="Praca1">
+      <div class="dg-leiloes-lance-incial">Lance inicial: <strong>R$ 150.000,00</strong></div>
+    </div>
+    <div class="Praca2">
+      <div class="dg-leiloes-lance-incial">Lance inicial: <strong>R$ 100.000,00</strong></div>
+    </div>
+  </div>
+
+  <div class="dg-leiloes-item-col">
+    <a class="dg-leiloes-img" href="/leilao/1021/lote/8">
+      <span style="background-image: url('/imagens-center/350x282/apto-goiania.jpg')"></span>
+    </a>
+    <div class="dg-leiloes-nome-leilao">Leilão de Imóveis Caixa</div>
+    <div class="dg-leiloes-nome-subleilao">Goiânia/GO - Setor Bueno - Apartamento 80m²</div>
+    <div class="dg-leiloes-valor-avaliacao">Avaliação: <strong>R$ 320.000,00</strong></div>
+    <div class="Praca1 dg-opacidade">
+      <div class="dg-leiloes-lance-incial">Lance inicial: <strong>R$ 240.000,00</strong></div>
+    </div>
+    <div class="Praca2">
+      <div class="dg-leiloes-lance-incial">Lance inicial: <strong>R$ 160.000,00</strong></div>
+    </div>
+  </div>
+</div>
