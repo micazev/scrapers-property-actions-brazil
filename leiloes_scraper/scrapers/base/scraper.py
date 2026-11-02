@@ -65,11 +65,17 @@ class BaseScraper(ABC):
         pass
 
     def _create_run_id(self) -> str:
-        """Create a unique run ID."""
+        """Create a unique run ID.
+
+        The GitHub run ID is kept for traceability, but it is not unique on its
+        own: a re-run attempt reuses it, and one job can run a scraper twice.
+        The random suffix keeps scraper_runs.run_id unique in both cases.
+        """
+        suffix = uuid.uuid4().hex[:8]
         github_run_id = os.environ.get("GITHUB_RUN_ID")
         if github_run_id:
-            return f"{self.get_source_name()}_{github_run_id}"
-        return f"{self.get_source_name()}_{uuid.uuid4().hex[:8]}"
+            return f"{self.get_source_name()}_{github_run_id}_{suffix}"
+        return f"{self.get_source_name()}_{suffix}"
 
     def _get_workflow_url(self) -> str | None:
         """Get GitHub Actions workflow URL if available."""

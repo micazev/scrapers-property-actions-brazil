@@ -65,3 +65,11 @@ async def test_empty_run_still_writes_a_file(monkeypatch, tmp_path):
     written = json.loads((tmp_path / "out" / "fakeleiloes.json").read_text(encoding="utf-8"))
     assert written["count"] == 0
     assert written["properties"] == []
+
+
+def test_run_ids_are_unique_within_one_github_run(monkeypatch):
+    # A re-run attempt reuses GITHUB_RUN_ID; scraper_runs.run_id is UNIQUE.
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    first, second = FakeScraper([])._create_run_id(), FakeScraper([])._create_run_id()
+    assert first != second
+    assert first.startswith("fakeleiloes_123_")
